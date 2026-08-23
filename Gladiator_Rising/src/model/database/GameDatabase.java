@@ -1,3 +1,8 @@
+package model.database;
+
+import model.combatants.Gladiator;
+import model.items.Item;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

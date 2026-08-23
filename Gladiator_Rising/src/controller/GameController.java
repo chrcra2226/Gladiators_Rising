@@ -1,60 +1,73 @@
+package controller;
+
 import java.util.List;
 import java.util.Scanner;
 
+import model.combatants.Beast;
+import model.combatants.Champion;
+import model.combatants.Gladiator;
+import model.combatants.Opponent;
+import model.combatants.Swordsman;
+import model.database.GameDatabase;
+import model.items.Item;
+import view.ConsoleView;
+
 /**
- * Coliseum drives the terminal menu, the game loop, and ties every
- * other class together. It contains the program's main() method and
- * is the only class with a Scanner and System.out calls tied to menu
- * flow - keeping input/output concerns out of the model classes
- * (Gladiator, Opponent, Item, Loadout, etc.).
+ * GameController is the Controller in this application's MVC
+ * structure. It owns the input Scanner, drives the main menu and
+ * in-game loop, and orchestrates calls between the Model (Gladiator,
+ * Opponent, GameDatabase, etc.) and the View (ConsoleView). It never
+ * calls System.out directly itself - every message the player sees
+ * goes through a ConsoleView method.
  *
- * All combat is run using Character/Combatant references, so
- * runBattle() works unchanged no matter which concrete Opponent
- * subclass (Swordsman, Beast, Champion) is passed in - the
- * polymorphism demonstration in action.
+ * One deliberate boundary: the combat narration printed inside each
+ * Combatant's attack() method (e.g., "Swordsman swings a rusty sword
+ * for 6 damage!") stays in the Model layer rather than moving here.
+ * That narration is part of *how* each opponent attacks, not a
+ * separate reporting step - it is what makes Swordsman, Beast, and
+ * Champion's overridden attack() implementations distinct from one
+ * another (the project's polymorphism demonstration). Pulling it out
+ * would mean changing Combatant.attack(Combatant target) from void to
+ * a method that returns a result for the View to print, which departs
+ * from the approved design document's interface.
  */
-public class Coliseum {
+public class GameController {
 
     private final Scanner scanner;
     private final GameDatabase database;
+    private final ConsoleView view;
 
     /**
-     * Constructs the Coliseum application, wiring up the input
-     * scanner and the game database.
+     * Constructs the GameController, wiring up the input scanner, the
+     * game database, and its own ConsoleView.
      *
      * @param database the GameDatabase used for save/load and the
      *                 armory catalog
      */
-    public Coliseum(String[] args, GameDatabase database) {
+    public GameController(GameDatabase database) {
         this.scanner = new Scanner(System.in);
         this.database = database;
+        this.view = new ConsoleView();
     }
 
     /**
-     * Program entry point. Seeds the armory catalog with starting
-     * gear, then starts the main menu loop.
-     *
-     * @param args command-line arguments (unused)
+     * Starts the application: seeds the armory catalog, then enters
+     * the main menu loop. Called once by Main.
      */
-    public static void main(String[] args) {
-        GameDatabase database = new GameDatabase("coliseum.db");
-        seedArmory(database);
-
-        Coliseum game = new Coliseum(args, database);
-        game.showMainMenu();
-        database.close();
+    public void start() {
+        seedArmory();
+        showMainMenu();
     }
 
     /**
-     * Populates the armory catalog with a starting set of weapons and
-     * armor. Uses GameDatabase.addItem(), which performs an
-     * INSERT OR IGNORE, so calling this on every run is safe - the
-     * first run creates the rows, and every run after that is a
-     * no-op for items that already exist in the gear table.
-     *
-     * @param database the GameDatabase to seed
+     * Populates the armory catalog with a starting set of weapons,
+     * armor, and the Bandage consumable. Uses GameDatabase.addItem(),
+     * which performs an INSERT OR IGNORE, so calling this on every
+     * run is safe - the first run creates the rows, and every run
+     * after that is a no-op for items that already exist in the gear
+     * table.
      */
-    private static void seedArmory(GameDatabase database) {
+    private void seedArmory() {
         database.addItem(new Item(1, "Iron Shortsword", "WEAPON", 10, 4));
         database.addItem(new Item(2, "Steel Longsword", "WEAPON", 25, 9));
         database.addItem(new Item(3, "War Hammer", "WEAPON", 50, 14));
@@ -72,12 +85,7 @@ public class Coliseum {
         boolean running = true;
 
         while (running) {
-            System.out.println("\n=== GLADIATOR RISING ===");
-            System.out.println("1. New Game");
-            System.out.println("2. Load Game");
-            System.out.println("3. Quit");
-            System.out.print("Choose an option: ");
-
+            view.showMainMenu();
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
@@ -88,11 +96,11 @@ public class Coliseum {
                     loadExistingGame();
                     break;
                 case "3":
-                    System.out.println("Farewell, gladiator.");
+                    view.showFarewell();
                     running = false;
                     break;
                 default:
-                    System.out.println("Invalid choice. Please enter 1, 2, or 3.");
+                    view.showInvalidMainMenuChoice();
             }
         }
     }
@@ -101,10 +109,10 @@ public class Coliseum {
      * Prompts for a gladiator name and begins a fresh campaign.
      */
     private void startNewGame() {
-        System.out.print("Enter your gladiator's name: ");
+        view.promptGladiatorName();
         String name = scanner.nextLine().trim();
         Gladiator gladiator = new Gladiator(name, 60);
-        System.out.println("\nWelcome to the coliseum, " + name + "!");
+        view.showNewGladiatorWelcome(name);
         runGameLoop(gladiator);
     }
 
@@ -112,16 +120,16 @@ public class Coliseum {
      * Attempts to load a previously saved gladiator by name.
      */
     private void loadExistingGame() {
-        System.out.print("Enter the name of your saved gladiator: ");
+        view.promptSavedGladiatorName();
         String name = scanner.nextLine().trim();
         Gladiator gladiator = database.loadGladiator(name);
 
         if (gladiator == null) {
-            System.out.println("No saved gladiator found with that name.");
+            view.showNoSavedGladiatorFound();
             return;
         }
 
-        System.out.println("Welcome back, " + name + "!");
+        view.showReturningGladiatorWelcome(name);
         runGameLoop(gladiator);
     }
 
@@ -135,14 +143,7 @@ public class Coliseum {
         boolean playing = true;
 
         while (playing && gladiator.isAlive()) {
-            System.out.println("\n--- " + gladiator + " ---");
-            System.out.println("1. Enter the Coliseum");
-            System.out.println("2. Visit the Armory");
-            System.out.println("3. View Gladiator Status");
-            System.out.println("4. Save Game");
-            System.out.println("5. Quit to Main Menu");
-            System.out.print("Choose an option: ");
-
+            view.showGameLoopMenu(gladiator);
             String choice = scanner.nextLine().trim();
 
             switch (choice) {
@@ -153,22 +154,22 @@ public class Coliseum {
                     openArmory(gladiator);
                     break;
                 case "3":
-                    System.out.println(gladiator);
+                    view.showGladiatorStatus(gladiator);
                     break;
                 case "4":
                     database.saveGladiator(gladiator);
-                    System.out.println("Game saved.");
+                    view.showGameSaved();
                     break;
                 case "5":
                     playing = false;
                     break;
                 default:
-                    System.out.println("Invalid choice. Please enter a number from 1 to 5.");
+                    view.showInvalidGameLoopChoice();
             }
         }
 
         if (!gladiator.isAlive()) {
-            System.out.println("\n" + gladiator.getName() + " has fallen in the coliseum. Game over.");
+            view.showGladiatorFallen(gladiator.getName());
         }
     }
 
@@ -180,7 +181,7 @@ public class Coliseum {
      */
     private void enterColiseum(Gladiator gladiator) {
         Opponent opponent = nextOpponent(gladiator.getRound());
-        System.out.println("\nA " + opponent.getName() + " enters the arena, ready to fight!");
+        view.showOpponentEntrance(opponent.getName());
         runBattle(gladiator, opponent);
     }
 
@@ -223,36 +224,30 @@ public class Coliseum {
         }
 
         if (gladiator.isAlive()) {
-            System.out.println(opponent.getName() + " has been defeated!");
+            view.showOpponentDefeated(opponent.getName());
             gladiator.addGold(opponent.getGoldReward());
-            System.out.println(gladiator.getName() + " earns " + opponent.getGoldReward() + " gold.");
+            view.showGoldEarned(gladiator.getName(), opponent.getGoldReward());
             gladiator.advanceRound();
         } else {
-            System.out.println(gladiator.getName() + " has been defeated by the " + opponent.getName() + "...");
+            view.showGladiatorDefeated(gladiator.getName(), opponent.getName());
         }
     }
 
     /**
-     * Displays purchasable items and handles buy/equip input.
+     * Displays purchasable items and handles buy/equip/use input.
      *
      * @param gladiator the active Gladiator
      */
     private void openArmory(Gladiator gladiator) {
         List<Item> items = database.getAllItems();
-
-        System.out.println("\n=== ARMORY (Gold: " + gladiator.getGold() + ") ===");
-        for (int i = 0; i < items.size(); i++) {
-            System.out.println((i + 1) + ". " + items.get(i));
-        }
-        System.out.println((items.size() + 1) + ". Leave the Armory");
-        System.out.print("Choose an item to purchase: ");
+        view.showArmory(items, gladiator.getGold());
 
         String input = scanner.nextLine().trim();
         int choice;
         try {
             choice = Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            System.out.println("Invalid input.");
+            view.showInvalidInput();
             return;
         }
 
@@ -261,7 +256,7 @@ public class Coliseum {
         }
 
         if (choice < 1 || choice > items.size()) {
-            System.out.println("Invalid choice.");
+            view.showInvalidArmoryChoice();
             return;
         }
 
@@ -274,9 +269,9 @@ public class Coliseum {
 
         if (gladiator.spendGold(selected.getPrice())) {
             gladiator.equip(selected);
-            System.out.println("Purchased and equipped " + selected.getName() + "!");
+            view.showPurchasedAndEquipped(selected.getName());
         } else {
-            System.out.println("Not enough gold for that item.");
+            view.showNotEnoughGold();
         }
     }
 
@@ -293,9 +288,9 @@ public class Coliseum {
     private void useConsumable(Gladiator gladiator, Item item) {
         if (item.getName().equalsIgnoreCase("Bandage")) {
             if (gladiator.useBandage()) {
-                System.out.println(gladiator.getName() + " uses a Bandage and is fully healed!");
+                view.showBandageUsed(gladiator.getName());
             } else {
-                System.out.println("The Bandage is still on cooldown (" + gladiator.getBandageStatus() + ").");
+                view.showBandageOnCooldown(gladiator.getBandageStatus());
             }
         }
     }

@@ -1,3 +1,5 @@
+package model.items;
+
 /**
  * Item is a simple data class representing a single piece of gear
  * available in the armory - a weapon, a suit of armor, or a

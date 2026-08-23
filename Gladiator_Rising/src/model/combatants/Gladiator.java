@@ -1,3 +1,8 @@
+package model.combatants;
+
+import model.items.Item;
+import model.items.Loadout;
+
 /**
  * Gladiator represents the player. It extends Character, inheriting
  * name/health tracking and the takeDamage()/isAlive() behavior, while

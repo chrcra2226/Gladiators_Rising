@@ -1,3 +1,5 @@
+package model.combatants;
+
 /**
  * Combatant defines the behavior that every fighting entity in the game
  * must provide. It does not dictate HOW that behavior is implemented -

@@ -1,3 +1,5 @@
+package model.items;
+
 /**
  * Loadout holds the Gladiator's currently equipped weapon and armor.
  *

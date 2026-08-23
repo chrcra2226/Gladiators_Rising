@@ -1,3 +1,5 @@
+package model.combatants;
+
 /**
  * Opponent is the abstract base class for every enemy the gladiator
  * faces in the coliseum. It extends Character (multi-level

@@ -1,3 +1,5 @@
+package model.combatants;
+
 /**
  * Champion is the final, hardest opponent in the coliseum. It extends
  * Opponent and provides its own attack behavior featuring a heavy

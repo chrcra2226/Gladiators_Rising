@@ -1,3 +1,5 @@
+package model.combatants;
+
 /**
  * Swordsman is the earliest, least dangerous opponent in the
  * coliseum. It extends Opponent and provides a simple, single-strike

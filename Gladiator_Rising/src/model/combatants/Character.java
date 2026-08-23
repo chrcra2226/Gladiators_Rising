@@ -1,3 +1,5 @@
+package model.combatants;
+
 /**
  * Character is the abstract base class for every fighter in the game,
  * including the player's Gladiator and every Opponent the gladiator
