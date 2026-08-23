@@ -42,22 +42,26 @@ public class Coliseum {
 
         Coliseum game = new Coliseum(args, database);
         game.showMainMenu();
+        database.close();
     }
 
     /**
-     * Populates the armory catalog with a small starting set of
-     * weapons and armor. In Week 4 this seed data will instead be
-     * loaded from (or written into) the SQLite gear table.
+     * Populates the armory catalog with a starting set of weapons and
+     * armor. Uses GameDatabase.addItem(), which performs an
+     * INSERT OR IGNORE, so calling this on every run is safe - the
+     * first run creates the rows, and every run after that is a
+     * no-op for items that already exist in the gear table.
      *
      * @param database the GameDatabase to seed
      */
     private static void seedArmory(GameDatabase database) {
-        database.addItem(new Item(1, "Iron Shortsword", "WEAPON", 25, 4));
-        database.addItem(new Item(2, "Steel Longsword", "WEAPON", 60, 9));
-        database.addItem(new Item(3, "War Hammer", "WEAPON", 100, 14));
-        database.addItem(new Item(4, "Leather Vest", "ARMOR", 20, 3));
-        database.addItem(new Item(5, "Chainmail", "ARMOR", 55, 7));
-        database.addItem(new Item(6, "Plate Armor", "ARMOR", 95, 12));
+        database.addItem(new Item(1, "Iron Shortsword", "WEAPON", 10, 4));
+        database.addItem(new Item(2, "Steel Longsword", "WEAPON", 25, 9));
+        database.addItem(new Item(3, "War Hammer", "WEAPON", 50, 14));
+        database.addItem(new Item(4, "Leather Vest", "ARMOR", 10, 3));
+        database.addItem(new Item(5, "Chainmail", "ARMOR", 25, 7));
+        database.addItem(new Item(6, "Plate Armor", "ARMOR", 50, 12));
+        database.addItem(new Item(7, "Bandage", "CONSUMABLE", 0, 0));
     }
 
     /**
@@ -262,11 +266,37 @@ public class Coliseum {
         }
 
         Item selected = items.get(choice - 1);
+
+        if (selected.getType().equalsIgnoreCase("CONSUMABLE")) {
+            useConsumable(gladiator, selected);
+            return;
+        }
+
         if (gladiator.spendGold(selected.getPrice())) {
             gladiator.equip(selected);
             System.out.println("Purchased and equipped " + selected.getName() + "!");
         } else {
             System.out.println("Not enough gold for that item.");
+        }
+    }
+
+    /**
+     * Handles selecting a consumable item from the armory. Unlike
+     * weapons and armor, a consumable is used immediately rather than
+     * equipped, and its effect is implemented on Gladiator itself
+     * (see Gladiator.useBandage()) since it only ever changes the
+     * gladiator's own state.
+     *
+     * @param gladiator the active Gladiator
+     * @param item      the selected consumable Item
+     */
+    private void useConsumable(Gladiator gladiator, Item item) {
+        if (item.getName().equalsIgnoreCase("Bandage")) {
+            if (gladiator.useBandage()) {
+                System.out.println(gladiator.getName() + " uses a Bandage and is fully healed!");
+            } else {
+                System.out.println("The Bandage is still on cooldown (" + gladiator.getBandageStatus() + ").");
+            }
         }
     }
 }

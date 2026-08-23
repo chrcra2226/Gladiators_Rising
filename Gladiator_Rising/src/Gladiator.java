@@ -15,10 +15,20 @@ public class Gladiator extends Character {
     private int round;
     private final Loadout loadout;   // composition: Gladiator has-a Loadout
 
+    // The round the gladiator last used a bandage. -1 means "never
+    // used," which is chosen specifically so a bandage is available
+    // starting in round 1 (see useBandage()'s cooldown check below).
+    private int lastBandageRound;
+
+    // A bandage can be used once every other round (i.e., a 1-round
+    // cooldown between uses).
+    private static final int BANDAGE_COOLDOWN_ROUNDS = 2;
+
     /**
      * Constructs a new Gladiator with the given name and starting
-     * health. New gladiators begin with no gold, at round 1, and with
-     * an empty Loadout (no gear equipped).
+     * health. New gladiators begin with no gold, at round 1, with an
+     * empty Loadout (no gear equipped), and with a bandage ready to
+     * use immediately.
      *
      * @param name      the gladiator's name
      * @param maxHealth the gladiator's maximum starting health
@@ -28,6 +38,7 @@ public class Gladiator extends Character {
         this.gold = 0;
         this.round = 1;
         this.loadout = new Loadout();
+        this.lastBandageRound = -1;
     }
 
     /**
@@ -85,6 +96,73 @@ public class Gladiator extends Character {
     }
 
     /**
+     * Restores previously saved round, health, gold, and bandage
+     * cooldown onto this Gladiator. Used only by
+     * GameDatabase.loadGladiator() when reconstructing a Gladiator
+     * from a saved database row - normal gameplay only ever changes
+     * this state through advanceRound(), addGold()/spendGold(),
+     * takeDamage(), and useBandage().
+     *
+     * @param round            the saved round number
+     * @param health           the saved current health
+     * @param gold             the saved gold balance
+     * @param lastBandageRound the saved round the bandage was last used
+     */
+    public void restoreState(int round, int health, int gold, int lastBandageRound) {
+        this.round = round;
+        this.gold = gold;
+        this.lastBandageRound = lastBandageRound;
+        setHealth(health);
+    }
+
+    /**
+     * Attempts to use a bandage to fully restore health. Bandages are
+     * free but can only be used once every other round - this method
+     * enforces that cooldown itself so Coliseum only has to check the
+     * boolean result, keeping the cooldown rule in one place.
+     *
+     * @return true if the bandage was used and health was fully
+     *         restored, false if the bandage is still on cooldown
+     */
+    public boolean useBandage() {
+        if (!isBandageReady()) {
+            return false;
+        }
+        setHealth(getMaxHealth());
+        lastBandageRound = round;
+        return true;
+    }
+
+    /**
+     * Reports whether a bandage is currently usable.
+     *
+     * @return true if enough rounds have passed since the last
+     *         bandage use (or none has ever been used)
+     */
+    public boolean isBandageReady() {
+        return (round - lastBandageRound) >= BANDAGE_COOLDOWN_ROUNDS;
+    }
+
+    /**
+     * Formats the bandage's current availability for display on the
+     * status screen.
+     *
+     * @return "Ready" if usable now, or how many more rounds until it
+     *         is usable again
+     */
+    public String getBandageStatus() {
+        if (isBandageReady()) {
+            return "Ready";
+        }
+        int roundsRemaining = BANDAGE_COOLDOWN_ROUNDS - (round - lastBandageRound);
+        return "Ready in " + roundsRemaining + (roundsRemaining == 1 ? " round" : " rounds");
+    }
+
+    public int getLastBandageRound() {
+        return lastBandageRound;
+    }
+
+    /**
      * Adds gold to the gladiator's balance (e.g., after winning a
      * fight).
      *
@@ -131,14 +209,15 @@ public class Gladiator extends Character {
 
     /**
      * Formats the gladiator's full status for display: name, round,
-     * health, gold, and equipped gear. Overrides Character's
-     * toString() to include the additional Gladiator-specific state.
+     * health, gold, equipped gear, and bandage availability.
+     * Overrides Character's toString() to include the additional
+     * Gladiator-specific state.
      *
      * @return a human-readable status string
      */
     @Override
     public String toString() {
         return getName() + " | Round " + round + " | " + getHealth() + "/" + getMaxHealth() +
-                " HP | " + gold + "g | " + loadout;
+                " HP | " + gold + "g | " + loadout + " | Bandage: " + getBandageStatus();
     }
 }

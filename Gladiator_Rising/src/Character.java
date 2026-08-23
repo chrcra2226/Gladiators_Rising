@@ -71,6 +71,25 @@ public abstract class Character implements Combatant {
         return health > 0;
     }
 
+    /**
+     * Sets health directly to the given value, clamped between 0 and
+     * maxHealth. Protected because only a subclass should ever need
+     * to set health directly - normal gameplay damage flows through
+     * takeDamage() instead. This exists specifically to support
+     * Gladiator.restoreState(), which reconstructs a Gladiator's exact
+     * saved health when loading from the database.
+     *
+     * @param health the health value to set
+     */
+    protected void setHealth(int health) {
+        if (health < 0) {
+            health = 0;
+        } else if (health > maxHealth) {
+            health = maxHealth;
+        }
+        this.health = health;
+    }
+
     // ---- Public getters (fields stay private; this is encapsulation) ----
 
     public String getName() {
