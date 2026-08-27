@@ -29,35 +29,64 @@ README.md
 Crayton_Project_Part1.docx (Initial Proposal)
 Crayton_Project_Part2.docx (Final Proposal + Design Document)
 Crayton_Project_Part2 (Updated).docx (Final Proposal + Design Document)
+
 ├── coliseum.db
+
 ├── .gitignore
+
 ├── lib/
+
 │   └── sqlite-jdbc-3.53.2.1.jar (SQLite JDBC driver)
+
 └── src/
-    ├── Main.java (entry point; wires up the database and hands off to the Controller)
-    │
-    ├── controller/
-    │   └── GameController.java (menu loop, battle flow; orchestrates Model + View)
-    │
-    ├── model/
-    │   ├── combatants/
-    │   │   ├── Combatant.java (interface)
-    │   │   ├── Character.java (abstract class, implements Combatant)
-    │   │   ├── Gladiator.java (extends Character; composition via Loadout)
-    │   │   ├── Opponent.java (abstract class, extends Character)
-    │   │   ├── Swordsman.java (extends Opponent)
-    │   │   ├── Beast.java (extends Opponent)
-    │   │   └── Champion.java (extends Opponent)
-    │   │
-    │   ├── items/
-    │   │   ├── Item.java
-    │   │   └── Loadout.java (composition: owned by Gladiator)
-    │   │
-    │   └── database/
-    │       └── GameDatabase.java (SQLite-backed CRUD for gladiator saves and the gear catalog)
-    │
-    └── view/
-        └── ConsoleView.java (every piece of text the player sees; no game logic)
+
+|   ├── Main.java (entry point; wires up the database and hands off to the Controller)
+    
+|   │
+    
+|   ├── controller/
+    
+|   │   └── GameController.java (menu loop, battle flow; orchestrates Model + View)
+    
+|   │
+    
+|   ├── model/
+    
+|   │   ├── combatants/
+    
+|   │   │   ├── Combatant.java (interface)
+   
+|   │   │   ├── Character.java (abstract class, implements Combatant)
+    
+|   │   │   ├── Gladiator.java (extends Character; composition via Loadout)
+    
+|   │   │   ├── Opponent.java (abstract class, extends Character)
+    
+|   │   │   ├── Swordsman.java (extends Opponent)
+    
+|   │   │   ├── Beast.java (extends Opponent)
+    
+|   │   │   └── Champion.java (extends Opponent)
+    
+|   │   │
+    
+|   │   ├── items/
+    
+|   │   │   ├── Item.java
+    
+|   │   │   └── Loadout.java (composition: owned by Gladiator)
+    
+|   │   │
+    
+|   │   └── database/
+    
+|   │       └── GameDatabase.java (SQLite-backed CRUD for gladiator saves and the gear catalog)
+    
+|   │
+    
+|   └── view/
+   
+|       └── ConsoleView.java (every piece of text the player sees; no game logic)
 
 ## MVC Structure
 
