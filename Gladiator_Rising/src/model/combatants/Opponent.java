@@ -1,6 +1,10 @@
 package model.combatants;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Opponent is the abstract base class for every enemy the gladiator
  * faces in the coliseum. It extends Character (multi-level
  * inheritance: Opponent extends Character, which implements

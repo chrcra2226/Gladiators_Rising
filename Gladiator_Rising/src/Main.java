@@ -2,6 +2,10 @@ import controller.GameController;
 import model.database.GameDatabase;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Main is the application's entry point. It wires up the GameDatabase
  * and hands off control to the GameController, then closes the
  * database once the controller returns. It contains no game logic,

@@ -13,6 +13,10 @@ import model.items.Item;
 import view.ConsoleView;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * GameController is the Controller in this application's MVC
  * structure. It owns the input Scanner, drives the main menu and
  * in-game loop, and orchestrates calls between the Model (Gladiator,

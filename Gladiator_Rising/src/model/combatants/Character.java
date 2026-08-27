@@ -1,6 +1,10 @@
 package model.combatants;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Character is the abstract base class for every fighter in the game,
  * including the player's Gladiator and every Opponent the gladiator
  * faces. It implements the Combatant interface and provides the

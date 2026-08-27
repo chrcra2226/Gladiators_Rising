@@ -6,6 +6,10 @@ import model.combatants.Gladiator;
 import model.items.Item;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * ConsoleView is the View in this application's MVC structure. It is
  * responsible for every piece of text the player sees - menus,
  * prompts, and status/result messages - and nothing else. It has no

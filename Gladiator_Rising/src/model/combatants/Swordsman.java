@@ -1,6 +1,10 @@
 package model.combatants;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Swordsman is the earliest, least dangerous opponent in the
  * coliseum. It extends Opponent and provides a simple, single-strike
  * attack pattern - a straightforward baseline before the tougher

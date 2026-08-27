@@ -1,6 +1,10 @@
 package model.items;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Item is a simple data class representing a single piece of gear
  * available in the armory - a weapon, a suit of armor, or a
  * consumable (currently just the Bandage).

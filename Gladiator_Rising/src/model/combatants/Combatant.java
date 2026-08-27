@@ -1,6 +1,10 @@
 package model.combatants;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Combatant defines the behavior that every fighting entity in the game
  * must provide. It does not dictate HOW that behavior is implemented -
  * only WHAT every fighter must be able to do. This keeps the combat

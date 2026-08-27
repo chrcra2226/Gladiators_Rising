@@ -1,6 +1,10 @@
 package model.items;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Loadout holds the Gladiator's currently equipped weapon and armor.
  *
  * This class exists purely to be owned by a Gladiator - a Loadout has

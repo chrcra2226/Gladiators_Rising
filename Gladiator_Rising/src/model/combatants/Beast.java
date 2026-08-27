@@ -3,6 +3,10 @@ package model.combatants;
 import java.util.Random;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Beast is the mid-tier opponent in the coliseum - tougher than a
  * Swordsman, with a chance to land a second, follow-up strike each
  * turn. It extends Opponent and provides its own distinct attack

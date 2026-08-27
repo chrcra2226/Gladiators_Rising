@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * GameDatabase isolates all SQLite access behind a small set of
  * methods, so no other class in the program contains raw SQL. This
  * satisfies the project's CRUD requirement.

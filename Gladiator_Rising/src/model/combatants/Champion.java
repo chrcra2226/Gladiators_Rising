@@ -1,6 +1,10 @@
 package model.combatants;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Champion is the final, hardest opponent in the coliseum. It extends
  * Opponent and provides its own attack behavior featuring a heavy
  * special attack on a cooldown, completing the set of three distinct

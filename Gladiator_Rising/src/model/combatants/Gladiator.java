@@ -4,6 +4,10 @@ import model.items.Item;
 import model.items.Loadout;
 
 /**
+ * Name: Christopher Crayton
+ * Date: August 27, 2026
+ * Course: SDC330 - Advanced Object-Oriented Programming using Java
+ * 
  * Gladiator represents the player. It extends Character, inheriting
  * name/health tracking and the takeDamage()/isAlive() behavior, while
  * providing its own attack() implementation (polymorphism) and
