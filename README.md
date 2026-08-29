@@ -4,6 +4,10 @@ A text-based  combat game played entirely in the terminal. The player takes on t
 
 This submission restructures the application into an **MVC (Model-View-Controller)** package layout and adds a **Bandage** consumable. All classes from the approved design document are implemented, and `GameDatabase` uses the real SQLite JDBC driver (`org.xerial:sqlite-jdbc`) to persist gladiator saves and the armory catalog to a `coliseum.db` file on disk.
 
+## YouTube link for video demonstration
+
+Link - https://youtu.be/1YyCFG4YCSw
+
 ## How to Compile and Run
 
 This project depends on the SQLite JDBC driver, included at `lib/sqlite-jdbc-3.53.2.1.jar`. That jar needs to be on the classpath for both compiling and running. Because the source is now organized into packages, use the `@sources.txt`-style file list or a recursive find rather than a flat `src/*.java` glob.
